@@ -10,9 +10,12 @@ from docx import Document
 
 # ---------------- Visitor Counter Setup ----------------
 
+# Set the page title as the very first Streamlit command
+st.set_page_config(page_title="Auto Resume Creator")
+
 # Authenticate with Google Sheets
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name('app/credentials.json', scope)
 client = gspread.authorize(creds)
 
 # Open your Google Sheet
@@ -30,9 +33,6 @@ st.sidebar.title("👥 Visitors")
 st.sidebar.write(f"Total Visitors: {count}")
 
 # ---------------- Streamlit App Setup ----------------
-
-# Set the page title
-st.set_page_config(page_title="Auto Resume Creator")
 
 # Header section
 st.title("Auto Resume Creator")
