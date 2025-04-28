@@ -1,10 +1,35 @@
 import streamlit as st
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 from utils.genai_resume import generate_resume
 from utils.ml_model import match_resume_with_job
 from utils.generate_pdf import generate_pdf
 from utils.resume_templates import get_resume_template
 from PyPDF2 import PdfReader
 from docx import Document
+
+# ---------------- Visitor Counter Setup ----------------
+
+# Authenticate with Google Sheets
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+client = gspread.authorize(creds)
+
+# Open your Google Sheet
+sheet = client.open('VisitorCountsForAutoResume').sheet1  # Change if your sheet name is different
+
+# Read current visitor count
+count = int(sheet.cell(1, 1).value)
+
+# Update the count
+count += 1
+sheet.update_cell(1, 1, count)
+
+# Show visitor count in sidebar
+st.sidebar.title("👥 Visitors")
+st.sidebar.write(f"Total Visitors: {count}")
+
+# ---------------- Streamlit App Setup ----------------
 
 # Set the page title
 st.set_page_config(page_title="Auto Resume Creator")
@@ -51,7 +76,7 @@ if st.button("Generate Resume"):
         resume = generate_resume(job_desc_text)
         st.text_area("Generated Resume", value=resume, height=300)
         if st.button("Download Resume (PDF)"):
-            generate_pdf(resume)  # This assumes the `generate_pdf` function is properly defined
+            generate_pdf(resume)  # Make sure generate_pdf is properly defined
 
 # Match resume button (If the user has a resume)
 uploaded_resume = st.file_uploader("Upload Your Resume (Word or PDF)", type=["pdf", "docx"])
@@ -70,4 +95,3 @@ if uploaded_resume is not None:
             st.write(f"Job Fit Score: {match_score * 100:.2f}%")
         else:
             st.error("Please upload a job description before matching.")
-
