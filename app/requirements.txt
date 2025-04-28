@@ -1,0 +1,9 @@
+streamlit
+openai
+scikit-learn
+spacy
+joblib
+python-docx
+PyPDF2
+fpdf
+
