@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
 # Initialize Gemini with your API key
-genai.configure(api_key="AIzaSyBGhMP5L-XjfoUqupGMZYAyStecNd6FNG4")
+genai.configure(api_key="")
 
 def generate_resume(job_desc_text):
     model = genai.GenerativeModel('gemini-1.5-pro')  # or 'gemini-pro' based on your access
